@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌸 日本代購財務總覽 - Premium UI (雲端同步)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-color: #f9821e;
+            --primary-dark: #e06f12;
+            --accent-color: #007bff;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+
+            --bg-light: #ffffff;
+            --bg-soft: #fff7ed;
+            --bg-page: #f4f5f7;
+            --text-dark: #333;
+
+            --radius-lg: 18px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+
+            --shadow-soft: 0 4px 10px rgba(0,0,0,0.06);
+            --shadow-card: 0 6px 18px rgba(0,0,0,0.08);
+        }
+
+        body {
+            margin: 0;
+            padding: 25px;
+            background: var(--bg-page);
+            font-family: 'Noto Sans TC', sans-serif;
+            color: var(--text-dark);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.6em;
+            font-weight: 900;
+            margin-bottom: 30px;
+            color: var(--primary-color);
+        }
+
+        /* 大卡片 */
+        .container {
+            max-width: 1350px;
+            margin: 0 auto;
+            background: var(--bg-light);
+            padding: 35px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-card);
+        }
+
+        /* 小卡片 */
+        .card {
+            background: white;
+            padding: 28px;
+            border-radius: var(--radius-md);
+            margin-bottom: 30px;
+            box-shadow: var(--shadow-soft);
+        }
+
+        /* 特殊橘色卡片 */
+        .card-basic {
+            background: linear-gradient(135deg, #fff7e8 0%, #ffe8cc 100%);
+            border-left: 6px solid var(--primary-color);
+        }
+
+        h3 {
+            font-size: 1.4em;
+            margin-bottom: 20px;
+            font-weight: 800;
+            color: var(--primary-color);
+        }
+
+        /* 表單欄位：Premium UI 強化 */
+        .form-row {
+            display: flex;
+            gap: 25px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .form-field {
+            flex: 1;
+            min-width: 260px;
+        }
+
+        label {
+            display: block;
+            font-size: 1.05em;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1em;
+            border: 2px solid #ddd;
+            border-radius: var(--radius-md);
+            background: #fff;
+            transition: 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(249,130,30,0.25);
+            outline: none;
+        }
+
+        /* 主按鈕 */
+        .primary-btn {
+            width: 100%;
+            padding: 18px;
+            margin-top: 10px;
+            background: var(--primary-color);
+            border: none;
+            color: #fff;
+            font-size: 1.25em;
+            font-weight: 900;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: 0.2s;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(249,130,30,0.35);
+        }
+        .primary-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        .primary-btn:active {
+            transform: scale(0.97);
+        }
+
+        /* 新增導出 CSV 按鈕樣式 */
+        .export-btn {
+            background: #008856; /* Green for export */
+            box-shadow: 0 4px 15px rgba(0, 136, 86, 0.35);
+            margin-bottom: 25px; /* Add margin below the button */
+        }
+
+        .export-btn:hover {
+            background: #007047;
+        }
+
+        /* 編輯／刪除按鈕 */
+        .table-btn {
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            font-size: 0.9em;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            color: white;
+            margin-right: 5px;
+            box-shadow: var(--shadow-soft);
+        }
+        .edit-btn { background: var(--accent-color); }
+        .lock-btn { background: var(--success); }
+        .delete-btn { background: var(--danger); }
+
+        /* 狀態按鈕 */
+        .status-btn {
+            padding: 10px 16px;
+            font-size: 1em;
+            border-radius: var(--radius-md);
+            border: 1px solid #ccc;
+            cursor: pointer;
+            background: #f2f2f2;
+        }
+        .status-btn.active-unpaid { background: var(--warning); border-color: #c98700; }
+        .status-btn.active-deposit { background: #40b8ad; color: #fff; }
+        .status-btn.active-paid { background: var(--success); color: #fff; }
+
+        /* 狀態徽章 */
+        .status-badge {
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-weight: 900;
+            font-size: 1em;
+            color: white;
+        }
+        .badge-unpaid { background: var(--warning); color: #333; }
+        .badge-deposit { background: #40b8ad; }
+        .badge-paid { background: var(--success); }
+
+        /* 總計區塊 */
+        .summary-box {
+            display: flex;
+            justify-content: space-around;
+            gap: 25px;
+            padding: 25px;
+            border-radius: var(--radius-md);
+            background: var(--bg-soft);
+            border-left: 6px solid var(--primary-color);
+            margin-bottom: 35px;
+        }
+        .summary-item strong {
+            font-size: 1.7em;
+            display: block;
+            margin-top: 8px;
+        }
+
+        /* 表格 */
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 25px;
+            background: #fff;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-card);
+            overflow: hidden;
+        }
+        th {
+            background: #f9f9f9;
+            padding: 14px;
+            font-weight: 800;
+        }
+        td {
+            padding: 14px;
+            border-top: 1px solid #eee;
+        }
+
+        /* 手機版提升可讀性 */
+        @media (max-width: 768px) {
+            
+            /* 調整容器與邊距 */
+            body { padding: 15px; }
+            .container { padding: 20px; }
+            h1 { font-size: 2em; margin-bottom: 20px; }
+            h3 { font-size: 1.3em; }
+
+            /* 表單欄位調整 */
+            input, select { font-size: 1.1em; padding: 14px; }
+            .primary-btn { font-size: 1.2em; padding: 18px; }
+            .form-field { min-width: 100%; margin-bottom: 15px; }
+            .form-row { gap: 0; margin-bottom: 0 !important; }
+
+            /* 總計區塊堆疊 */
+            .summary-box { flex-direction: column; gap: 15px; }
+            .summary-item strong { font-size: 1.5em; }
+            
+            /* 響應式表格優化：將表格變成列表樣式 */
+            table, thead, tbody, th, td, tr { 
+                display: block; /* 所有表格元素都變成區塊 */
+                width: 100%;
+                box-sizing: border-box;
+            }
+            
+            thead { display: none; } /* 隱藏原本的表頭 */
+            
+            tr {
+                margin-bottom: 15px;
+                border: 1px solid #ddd;
+                border-radius: var(--radius-md);
+                overflow: hidden;
+            }
+            
+            td {
+                border: none; /* 移除單元格邊框 */
+                position: relative;
+                padding-left: 45%; /* 為標籤騰出空間 */
+                text-align: right;
+                font-size: 1em;
+            }
+            
+            td:last-child {
+                border-bottom: none;
+            }
+
+            td:before {
+                /* 使用 data-label 來顯示欄位名稱 */
+                content: attr(data-label);
+                position: absolute;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                width: 40%;
+                padding: 14px 10px;
+                white-space: nowrap;
+                text-align: left;
+                font-weight: 700;
+                background-color: #f7f7f7;
+                border-right: 1px solid #eee;
+                color: #555;
+            }
+
+            /* 特殊調整：操作按鈕區塊置中 */
+            td[data-label="操作"] {
+                text-align: center;
+                padding-left: 14px;
+            }
+            td[data-label="操作"]:before {
+                display: none;
+            }
+
+            /* 狀態按鈕組的樣式修正 */
+            .status-btn-group {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: flex-end; /* 靠右對齊 */
+                gap: 5px;
+            }
+            .status-btn {
+                padding: 8px 12px;
+                font-size: 0.9em;
+                flex: 1 1 auto;
+                min-width: unset;
+            }
+            .status-badge {
+                 margin-right: 0; /* 修正對齊 */
+            }
+        }
+
+
+        /* 修正欄位之間距離不足、避免彼此重疊 */
+        .form-row {
+            margin-bottom: 28px !important;   /* 增加每排下方空間 */
+        }
+
+        .form-field {
+            margin-bottom: 18px;              /* 每個欄位底部增加距離 */
+        }
+
+        /* 保證左右欄之間不會緊貼 */
+        .form-field input,
+        .form-field select {
+            box-sizing: border-box;
+        }
+
+        /* 日期欄位避免與右邊欄位黏在一起 */
+        input[type="date"] {
+            padding-top: 14px;
+            padding-bottom: 14px;
+        }
+
+        /* 客戶訂單容器 */
+        .buyer-summary-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        /* 基礎卡片樣式 */
+        .buyer-box {
+            border-left: 6px solid var(--primary-color);
+            border-radius: 16px;
+            padding: 22px 28px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        
+        /* 交錯背景色讓每塊 buyer box 清楚區分 */
+        .buyer-summary-list .buyer-box:nth-child(odd) {
+            background: #fff7e8; /* 淡橘 */
+        }
+        
+        .buyer-summary-list .buyer-box:nth-child(even) {
+            background: #f3f4f6; /* 淡灰 */
+        }
+
+        .buyer-name {
+            margin: 0;
+            font-size: 1.35em;
+            font-weight: 800;
+            color: var(--primary-color);
+        }
+
+        .buyer-total {
+            font-size: 1.2em;
+            margin: 10px 0;
+            font-weight: 700;
+            color: #444;
+        }
+
+        .buyer-items ul {
+            margin: 8px 0 5px 0;
+            padding-left: 20px;
+        }
+
+        .buyer-items li {
+            font-size: 1em;
+            margin-bottom: 4px;
+        }
+
+        /* 調整邊框讓橘色更明顯 */
+        .buyer-box {
+            border-left: 6px solid var(--primary-color);
+            border-radius: 16px;
+            padding: 22px 28px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        
+        /* 載入提示 */
+        #loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: var(--primary-dark);
+            flex-direction: column;
+            gap: 20px;
+        }
+
+    </style>
+</head>
+
+<body>
+    
+    <div id="loading-overlay" style="display: flex;">
+        <span>🔄 正在從雲端載入或儲存資料...</span>
+        <span id="loading-status" style="font-size: 0.7em; font-weight: normal; color: #666;">請稍候。</span>
+    </div>
+
+    <h1>🌸 日本代購財務總覽 - Premium UI (雲端同步)</h1>
+
+    <div class="container">
+
+        <div class="card card-basic">
+            <h3>📈 基本設定（匯率雲端暫存）</h3>
+
+            <div class="form-row">
+                <div class="form-field">
+                    <label>當日匯率 (JPY → TWD)</label>
+                    <input type="number" id="rate" step="0.0001" value="0.2250">
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>📝 新增代購品項</h3>
+
+            <div class="form-row">
+                <div class="form-field">
+                    <label>購買者姓名 / 代號</label>
+                    <input type="text" id="buyer" placeholder="例如：王小明">
+                </div>
+
+                <div class="form-field">
+                    <label>品項名稱</label>
+                    <input type="text" id="item" list="itemOptions" placeholder="輸入或選擇" onchange="autoFillPrices(this.value)">
+                    <datalist id="itemOptions"></datalist>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-field">
+                    <label>購買日期</label>
+                    <input type="date" id="purchaseDate">
+                </div>
+
+                <div class="form-field">
+                    <label>數量</label>
+                    <input type="number" id="quantity" value="1" min="1" oninput="updatePricesOnQuantityChange()">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-field">
+                    <label>代購成本（日圓）</label>
+                    <input type="number" id="costJPY" placeholder="例如：10000">
+                </div>
+
+                <div class="form-field">
+                    <label>售出金額（台幣）</label>
+                    <input type="number" id="priceTWD" placeholder="例如：3000">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-field">
+                    <label>預設收款狀態</label>
+                    <select id="isPaid">
+                        <option value="unpaid">未收</option>
+                        <option value="deposit">已收訂金</option>
+                        <option value="paid">已收全款</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="primary-btn" onclick="addItem()">➕ 新增紀錄</button>
+        </div>
+
+        <div class="summary-box">
+            <div class="summary-item">
+                總支出（TWD）<strong id="totalCost">0</strong>
+            </div>
+            <div class="summary-item">
+                總獲利（TWD）<strong id="totalProfit">0</strong>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>📦 客戶訂單總額與明細</h3>
+            <div id="buyerSummary" class="buyer-summary-list"></div>
+        </div>
+        
+        <button class="primary-btn export-btn" onclick="exportCSV()">⬇️ 導出 CSV 檔案</button>
+
+
+        <table>
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>日期</th>
+                    <th>購買者</th>
+                    <th>品項</th>
+                    <th>數量</th>
+                    <th>成本 (JPY)</th>
+                    <th>匯率</th>
+                    <th>成本 (TWD)</th>
+                    <th>售價 (TWD)</th>
+                    <th>訂金</th>
+                    <th>尾款</th>
+                    <th>獲利</th>
+                    <th>狀態</th>
+                </tr>
+            </thead>
+            <tbody id="logTableBody"></tbody>
+        </table>
+
+    </div>
+
+    <script>
+        // 【請務必確認這行 URL 正確無誤】
+        const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzB2nLjesCoWjVjmkM07-Nepof5Ec-MrfT3sZT5lKouKnks1gTsRUhQqriaH48o9z-Zmg/exec'; 
+
+        let records = []; 
+        let itemPriceCache = {}; 
+        
+        // 全域變數：追蹤當前正在編輯的 ID
+        let editingId = null;
+
+        const PAID_STATUSES = {
+            unpaid: '✗ 未收',
+            deposit: '50%訂金',
+            paid: '✓ 已收全款'
+        };
+
+        window.onload = function() {
+            // 由於 URL 已確認，直接載入資料
+            loadDataFromSheet();
+            document.getElementById('purchaseDate').valueAsDate = new Date();
+            
+            // 監聽匯率變動並儲存
+            document.getElementById('rate').addEventListener('input', function() { saveDataToSheet(); });
+        };
+        
+        // --- 雲端同步函式 ---
+
+        async function loadDataFromSheet() {
+            document.getElementById('loading-overlay').style.display = 'flex';
+            document.getElementById('loading-status').textContent = '正在從 Google Sheets 載入...';
+            
+            try {
+                // 發出 GET 請求，帶有 action=get 參數
+                const response = await fetch(WEB_APP_URL + '?action=get');
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                
+                const data = await response.json();
+                
+                if (data.error) throw new Error(data.error);
+
+                // 載入資料
+                records = data.records || [];
+                itemPriceCache = data.itemPriceCache || {};
+                
+                // 載入匯率
+                if (data.rate) document.getElementById('rate').value = data.rate;
+
+                renderTable();
+                renderItemDatalist();
+                
+                document.getElementById('loading-status').textContent = '載入完成。';
+
+            } catch (error) {
+                console.error('Error loading data:', error);
+                document.getElementById('loading-status').innerHTML = `
+                    載入失敗：${error.message}。請檢查 Apps Script 權限（是否為「任何人」）或部署版本。
+                `;
+            } finally {
+                // 延遲後隱藏，讓使用者看到完成訊息
+                setTimeout(() => { document.getElementById('loading-overlay').style.display = 'none'; }, 1000);
+            }
+        }
+
+        async function saveDataToSheet() {
+            document.getElementById('loading-overlay').style.display = 'flex';
+            document.getElementById('loading-status').textContent = '正在儲存到 Google Sheets...';
+            
+            const dataToSave = {
+                records: records,
+                itemPriceCache: itemPriceCache,
+                rate: document.getElementById('rate').value
+            };
+
+            try {
+                const response = await fetch(WEB_APP_URL, {
+                    method: 'POST',
+                    mode: 'cors',
+                    cache: 'no-cache',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(dataToSave)
+                });
+
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                
+                const result = await response.json();
+                
+                if (result.error) throw new Error(result.error);
+                
+                document.getElementById('loading-status').textContent = '儲存成功！';
+
+            } catch (error) {
+                console.error('Error saving data:', error);
+                document.getElementById('loading-status').innerHTML = `
+                    儲存失敗：${error.message}。請檢查 Apps Script 權限（是否為「任何人」）或部署版本。
+                `;
+            } finally {
+                 // 延遲後隱藏
+                setTimeout(() => { document.getElementById('loading-overlay').style.display = 'none'; }, 1000);
+            }
+        }
+
+        // --- 原有邏輯函式，但現在呼叫 saveDataToSheet() ---
+        
+        function renderItemDatalist() {
+            const datalist = document.getElementById('itemOptions');
+            datalist.innerHTML = '';
+            
+            const itemNames = Object.keys(itemPriceCache);
+            
+            itemNames.sort().forEach(item => {
+                if (item) { 
+                    const option = document.createElement('option');
+                    option.value = item;
+                    datalist.appendChild(option);
+                }
+            });
+        }
+        
+        function saveItemPrice(itemName, costJPY, priceTWD, quantity) {
+            itemName = itemName.trim();
+            if (!itemName || quantity <= 0) return;
+
+            const singleCostJPY = costJPY / quantity;
+            const singlePriceTWD = priceTWD / quantity;
+            
+            itemPriceCache[itemName] = {
+                cost: singleCostJPY.toFixed(2),
+                price: singlePriceTWD.toFixed(2)
+            };
+
+            renderItemDatalist(); 
+            saveDataToSheet(); // <--- 儲存到雲端
+        }
+
+        // 數量變動時，重新計算總成本和總售價
+        function updatePricesOnQuantityChange() {
+            const itemName = document.getElementById('item').value.trim();
+            const quantity = parseInt(document.getElementById('quantity').value) || 1;
+            
+            if (itemPriceCache[itemName]) {
+                const { cost, price } = itemPriceCache[itemName];
+                
+                const newCostJPY = parseFloat(cost) * quantity;
+                const newPriceTWD = parseFloat(price) * quantity;
+                
+                document.getElementById('costJPY').value = newCostJPY.toFixed(2);
+                document.getElementById('priceTWD').value = newPriceTWD.toFixed(2);
+            }
+        }
+        
+        // 選擇品項或完成輸入時，自動填充價格欄位
+        function autoFillPrices(itemName) {
+            const trimmedName = itemName.trim();
+            
+            if (itemPriceCache[trimmedName]) {
+                updatePricesOnQuantityChange(); 
+            } else {
+                document.getElementById('costJPY').value = '';
+                document.getElementById('priceTWD').value = '';
+            }
+        }
+        
+        // 新增品項
+        function addItem() {
+            const item = document.getElementById('item').value.trim(); 
+            const quantity = parseInt(document.getElementById('quantity').value); 
+            
+            if (!item) {
+                 alert('請輸入品項名稱。');
+                 return;
+            }
+
+            // 1. 取得其他欄位值
+            const purchaseDate = document.getElementById('purchaseDate').value; 
+            // 匯率從獨立欄位取得
+            const rate = parseFloat(document.getElementById('rate').value); 
+            const buyer = document.getElementById('buyer').value.trim(); 
+            const paidStatus = document.getElementById('isPaid').value; 
+            const costJPY = parseFloat(document.getElementById('costJPY').value); 
+            const priceTWD = parseFloat(document.getElementById('priceTWD').value); 
+
+            if (!purchaseDate || !rate || rate <= 0) {
+                 alert('請確認「購買日期」和「當日匯率」已填寫有效數值！');
+                 return;
+            }
+
+            if (!buyer || isNaN(quantity) || isNaN(costJPY) || isNaN(priceTWD) || quantity <= 0) {
+                alert('請確認所有必填欄位都已填寫正確。');
+                return;
+            }
+
+            // 2. 核心計算邏輯
+            const costTWD = costJPY * rate; 
+            const totalSaleTWD = priceTWD;
+            const profit = totalSaleTWD - costTWD;
+            
+            // 訂金計算：向下取整 (捨去個位數與乘法後的小數位金額 -> Math.floor(TWD * 0.5))
+            const depositTWD = Math.floor(totalSaleTWD * 0.5); 
+            const balanceTWD = totalSaleTWD - depositTWD;
+
+            const newRecord = {
+                id: Date.now(), 
+                purchaseDate: purchaseDate, 
+                buyer: buyer, 
+                item: item, 
+                quantity: quantity,
+                costJPY: costJPY.toFixed(2), 
+                rate: rate.toFixed(4), 
+                costTWD: costTWD.toFixed(2), 
+                priceTWD: totalSaleTWD.toFixed(2), 
+                depositTWD: depositTWD.toFixed(2), 
+                balanceTWD: balanceTWD.toFixed(2), 
+                profit: profit.toFixed(2),
+                isPaid: paidStatus 
+            };
+
+            records.push(newRecord);
+            
+            saveItemPrice(item, costJPY, totalSaleTWD, quantity); 
+
+            // 清空輸入欄位 
+            document.getElementById('
